@@ -1,4 +1,4 @@
-#include "Matrix.h"
+﻿#include "Matrix.h"
 
 int Matrix::NRows()
 {
@@ -32,113 +32,164 @@ double Matrix::Det()
 {
 	if (nrows != ncols)
 	{
-		cout << "Matrix is not square, returning 0!\n";
+		cout << "Matrix's not square. Cannot calculate determinant";
 		return 0;
 	}
-	Matrix temp = EchelonMatrix();
+	Matrix temp(*this);
 	double det = 1;
-	for (int i = 0; i < nrows; i++)
-	{
-		det *= temp[i][i];
-	}
-	return det;
-}
-
-Matrix& Matrix::EchelonMatrix()
-{
-	Matrix* temp = new Matrix(*this);
 	for (int i = 1; i < nrows; i++)
 	{
 		for (int j = 0; j < i; j++)
 		{
-			int f1 = FirstNumberInRow(temp->rows[j]);
-			int f2 = FirstNumberInRow(temp->rows[i]);
-			if (f1 == f2 && f1 != -1)
+			int f1 = LeadingEntry(temp[j]);
+			int f2 = LeadingEntry(temp[i]);
+			if (f1 == f2 && f1 != ncols)
 			{
-				double factor = temp->rows[i][f1] / temp->rows[j][f1];
+				double factor = temp[i][f1] / temp[j][f1];
 				for (int k = f1; k < ncols; k++)
 				{
-					temp->rows[i][k] -= factor * temp->rows[j][k];
+					temp[i][k] -= factor * temp[j][k];
 				}
-				cout << "\n" << *temp << "\n";
 			}
-			else if(f1 > f2)
+			else if (f1 > f2)
 			{
-				temp->SwapRows(i, j);
-				cout << "\n" << *temp << "\n";
+				det *= -1;
+				temp.SwapRows(i, j);
 				break;
 			}
 		}
 	}
-	return *temp;
+	for(int i  = 0; i < nrows; i++)
+	{
+		int index = LeadingEntry(temp[i]);
+		if (index == ncols)
+			return 0;
+		det *= temp[i][index];
+
+	}
+	return det;
 }
 
-Matrix& Matrix::Invert()
+Matrix Matrix::EchelonMatrix()
+{
+	//Tạo bản sao của ma trận gốc để không thay đổi ma trận gốc
+	Matrix temp(*this);
+	for (int i = 1; i < nrows; i++)
+	{
+		for (int j = 0; j < i; j++)
+		{
+			//Tìm vị trí phần tử khác 0 đầu tiên
+			int f1 = LeadingEntry(temp[j]);
+			int f2 = LeadingEntry(temp[i]);
+			//Nếu vị trí khác 0 của 2 hàng bằng nhau thì trừ cho hàng đang xét factor lần hàng j
+			if (f1 == f2 && f1 != ncols)
+			{
+				//factor là tỉ lệ cần trừ để vị trí f2 của hàng i = 0
+				double factor = temp[i][f1] / temp[j][f1];
+				//Trừ cả hàng cho factor lần hàng j
+				for (int k = f1; k < ncols; k++)
+				{
+					temp[i][k] -= factor * temp[j][k];
+				}
+			}
+			//Nếu f1 > f2 thì ta phải hoán vị 2 hàng cho nhau
+			else if(f1 > f2)
+			{
+				temp.SwapRows(i, j);
+				break;
+			}
+		}
+	}
+	return temp;
+}
+
+Matrix Matrix::Invert()
 {
 	if(ncols != nrows || Det() == 0)
 	{
 		cout << "Cannot Invert!\n";
 		return *this;
 	}
+	//Tạo bản sao của ma trận gốc để không thay đổi ma trận gốc
 	Matrix temp(*this);
-	Matrix *I = new Matrix(ncols, ncols);
+	//Tạo ma trận đơn vị I
+	Matrix I(ncols, ncols);
+
+	//Điền vào ma trận đơn vị I tại đường chéo là 1, và những điểm khác là 0
 	for (int i = 0; i < nrows; i++)
 	{
 		for (int j = 0; j < ncols; j++)
 		{
 			if (i == j)
-				I->rows[i][i] = 1;
+				I[i][i] = 1;
 			else
-				I->rows[i][j] = 0;
+				I[i][j] = 0;
 		}
 	}
 
+	//Chuyển về ma trận bậc thang
 	for (int i = 1; i < nrows; i++)
 	{
 		for (int j = 0; j < i; j++)
 		{
-			if (temp[j][j] != 0)
+			//Tìm vị trí phần tử khác 0 đầu tiên
+			int f1 = LeadingEntry(temp[j]);
+			int f2 = LeadingEntry(temp[i]);
+
+			//Nếu vị trí khác 0 đầu tiên của 2 hàng bằng nhau thì trừ cho hàng đang xét factor lần hàng j
+			if (f1 == f2 && f1 != ncols)
 			{
-				double factor = temp[i][j] / temp[j][j];
-				for (int k = j; k < ncols; k++)
+				//factor là tỉ lệ cần trừ để vị trí f2 của hàng i = 0
+				double factor = temp[i][f1] / temp[j][f1];
+
+				//Trừ cả hàng cho factor lần hàng j
+				for (int k = 0; k < ncols; k++)
 				{
 					temp[i][k] -= factor * temp[j][k];
-					I->rows[i][k] -= factor * I->rows[j][k];
+					I[i][k] -= factor * I[j][k];
 				}
 			}
-			else
+
+			//Nếu f1 > f2 và f2 khác -1 tức hàng thứ i có phần tử khác 0, thì ta phải hoán vị 2 hàng cho nhau
+			else if (f1 > f2)
 			{
 				temp.SwapRows(i, j);
-				I->SwapRows(i, j);
+				I.SwapRows(i, j);
 				break;
 			}
 		}
 	}
 
+	//Chuyển về ma trận đơn vị
+
+	//Duyệt từ hàng thứ 2 từ dưới lên
 	for (int i = nrows - 2; i >= 0; i--)
 	{
 		for (int j = nrows - 1; j > i; j--)
 		{
+			//Tìm tỉ lệ cần trừ để vị trí j của hàng i = 0
 			double factor = temp[i][j] / temp[j][j];
 			for (int k = 0; k < ncols; k++)
 			{
 				temp[i][k] -= factor * temp[j][k];
-				I->rows[i][k] -= factor * I->rows[j][k];
+				I[i][k] -= factor * I[j][k];
 			}
 		}
 	}
 
+	//Chia các phần tử của hàng i cho temp[i][i] đưa temp[i][i] về 1, tức ma trận đơn vị
 	for (int i = 0; i < nrows; i++)
 	{
 		for (int j = 0; j < ncols; j++)
 		{
-			I->rows[i][j] /= temp[i][i];
+			I[i][j] /= temp[i][i];
 		}
-		temp[i][i] = 1;
 	}
-	return *I;
+	return I;
 }
 
+//Hàm hoán vị 2 dòng trong ma trận
+//i1, i2 là vị trí của 2 dòng cần hoán vị
 void Matrix::SwapRows(int i1, int i2)
 {
 	Vector t = rows[i1];
@@ -146,19 +197,22 @@ void Matrix::SwapRows(int i1, int i2)
 	rows[i2] = t;
 }
 
+//Hàm tính hạng của ma trận
 int Matrix::Rank()
 {
+	//Tạo ma trận mới là ma trận bậc thang
 	Matrix temp = EchelonMatrix();
-	int rank = 0;
-	for (int i = 0; i < nrows; i++)
+	int rank;
+	for (rank = 0; rank < nrows; rank++)
 	{
-		if (FirstNumberInRow(temp[i]) != -1)
-			rank++;
+		//Nếu hàng i có phần tử khác 0, thì tăng rank lên 1
+		if (LeadingEntry(temp[rank]) == ncols)
+			break;
 	}
 	return rank;
 }
 
-Matrix& Matrix::operator+(Matrix& other)
+Matrix Matrix::operator+(const Matrix& other)
 {
 	if (nrows != other.nrows || ncols != other.ncols)
 	{
@@ -176,7 +230,7 @@ Matrix& Matrix::operator+(Matrix& other)
 	return *matrix;
 }
 
-Matrix& Matrix::operator-(Matrix& other)
+Matrix Matrix::operator-(const Matrix& other)
 {
 	if (nrows != other.nrows || ncols != other.ncols)
 	{
@@ -194,7 +248,8 @@ Matrix& Matrix::operator-(Matrix& other)
 	return *matrix;
 }
 
-Matrix& Matrix::operator*(Matrix& other)
+//Toán tử nhân 2 ma trận
+Matrix Matrix::operator*(const Matrix& other)
 {
 	if (ncols != other.nrows)
 	{
@@ -223,15 +278,15 @@ Vector& Matrix::operator [](int index)
 	return rows[index];
 }
 
-ostream& operator <<(ostream& os, Matrix& A)
+ostream& operator <<(ostream& os,const Matrix& A)
 {
 	for (int i = 0; i < A.nrows; i++)
 	{
 		for (int j = 0; j < A.ncols; j++)
 		{
-			cout << A.rows[i][j] << " ";
+			os << A.rows[i][j] << " ";
 		}
-		cout << "\n";
+		os << "\n";
 	}
 	return os;
 }
@@ -252,7 +307,7 @@ Matrix::Matrix(int m, int n)
 	}
 }
 
-Matrix::Matrix(Matrix &other)
+Matrix::Matrix(const Matrix &other)
 {
 	nrows = other.nrows;
 	ncols = other.ncols;

@@ -5,53 +5,53 @@ int Approximate(double a, double b)
 	return (abs(a - b) < epsilon);
 }
 
-Vector& operator + (Vector& A, Vector& B)
+Vector operator + (const Vector& A, const Vector& B)
 {
 	if (A.size() != B.size())
 	{
 		cout << "Invalid dimesional!";
 		return A;
 	}
-	Vector *C = new Vector;
+	Vector C;
 	int n = (int)A.size();
-	C->resize(A.size());
+	C.resize(A.size());
 	for (int i = 0; i < n; i++)
 	{
-		(*C)[i] = A[i] + B[i];
+		C[i] = A[i] + B[i];
 	}
-	return *C;
+	return C;
 }
 
-Vector& operator - (Vector& A, Vector& B)
+Vector operator - (const Vector& A, const Vector& B)
 {
 	if (A.size() != B.size())
 	{
 		cout << "Invalid dimesion!";
 		return A;
 	}
-	Vector *C = new Vector;
+	Vector C;
 	int n = (int)A.size();
-	C->resize(A.size());
+	C.resize(A.size());
 	for (int i = 0; i < n; i++)
 	{
-		(*C)[i] = A[i] - B[i];
+		C[i] = A[i] - B[i];
 	}
-	return *C;
+	return C;
 }
 
-Vector& operator * (Vector& A, double B)
+Vector operator * (const Vector& A, double B)
 {
-	Vector* Result = new Vector();
+	Vector Result;
 	int n = (int)A.size();
-	Result->resize(n);
+	Result.resize(n);
 	for (int i = 0; i < n; i++)
 	{
-		(*Result)[i] = A[i] * B;
+		Result[i] = A[i] * B;
 	}
-	return *Result;
+	return Result;
 }
 
-ostream& operator << (ostream& os, Vector& v)
+ostream& operator << (ostream& os, const Vector& v)
 {
 	int n = (int)v.size();
 	for (int i = 0; i < n; i++)
@@ -61,12 +61,13 @@ ostream& operator << (ostream& os, Vector& v)
 	return os;
 }
 
-int FirstNumberInRow(Vector v)
+int LeadingEntry(Vector v)
 {
-	for (int i = 0; i < v.size(); i++)
+	int i;
+	for (i = 0; i < v.size(); i++)
 	{
 		if (!Approximate(v[i], 0))
 			return i;
 	}
-	return -1;
+	return i;
 }

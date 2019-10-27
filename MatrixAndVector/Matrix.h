@@ -12,20 +12,20 @@ public:
 	int NCols();
 	void Input();
 	double Det();
-	Matrix& EchelonMatrix();
-	Matrix& Invert();
+	Matrix EchelonMatrix();
+	Matrix Invert();
 	void SwapRows(int i1, int i2);
 	int Rank();
 
-	Matrix& operator+(Matrix& other);
-	Matrix& operator-(Matrix& other);
-	Matrix& operator*(Matrix& other);
+	Matrix operator+(const Matrix& other);
+	Matrix operator-(const Matrix& other);
+	Matrix operator*(const Matrix& other);
 	Vector& operator [](int index);
-	friend ostream& operator <<(ostream& os, Matrix& A);
+	friend ostream& operator <<(ostream& os, const Matrix& A);
 
 	Matrix();
 	Matrix(int m, int n);
-	Matrix(Matrix &other);
+	Matrix(const Matrix &other);
 	~Matrix();
 };
 

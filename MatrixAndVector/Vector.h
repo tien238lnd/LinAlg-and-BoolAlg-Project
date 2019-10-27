@@ -9,8 +9,8 @@ using namespace std;
 
 int Approximate(double a, double b);
 
-Vector& operator + (Vector& A, Vector& B);
-Vector& operator - (Vector& A, Vector& B);
-Vector& operator * (Vector& A, double B);
-ostream& operator << (ostream& os, Vector& v);
-int FirstNumberInRow(Vector v);
+Vector operator + (const Vector& A, const Vector& B);
+Vector operator - (const Vector& A, const Vector& B);
+Vector operator * (const Vector& A, double B);
+ostream& operator << (ostream& os, const Vector& v);
+int LeadingEntry(Vector v);

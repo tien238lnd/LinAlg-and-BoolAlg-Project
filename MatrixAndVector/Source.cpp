@@ -29,6 +29,7 @@ int main()
 		{
 			cout << "a" << i + 1 << j + 1 << ": ";
 			cin >> A[i][j];
+
 		}
 		cout << "b" << i + 1 << ": ";
 		cin >> B[i][0];
