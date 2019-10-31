@@ -123,9 +123,9 @@ void Solve(Matrix A, Matrix b)
 			//Trừ vector ở vế phải cho các vector ở vế trái rồi chia cho hệ số để tìm ra nghiệm tại x[index]
 			for (int j = index + 1; j < column; j++)
 			{
-				temp1 = temp1 - x[j] * temp[i][j];
+				temp1 = temp1 - temp[i][j] * x[j];
 			}
-			temp1 = temp1 * (1.0/temp[i][index]);
+			temp1 = (1.0/temp[i][index]) * temp1;
 			x[index] = temp1;
 		}
 

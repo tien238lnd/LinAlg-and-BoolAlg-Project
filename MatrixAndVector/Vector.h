@@ -11,6 +11,8 @@ int Approximate(double a, double b);
 
 Vector operator + (const Vector& A, const Vector& B);
 Vector operator - (const Vector& A, const Vector& B);
-Vector operator * (const Vector& A, double B);
+Vector operator * (double A, const Vector& B);
+double operator * (const Vector& A, const Vector& B);
+
 ostream& operator << (ostream& os, const Vector& v);
 int LeadingEntry(Vector v);

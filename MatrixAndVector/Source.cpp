@@ -1,5 +1,5 @@
 #include "function.h"
-
+/*
 int main()
 {
 	int column, row;
@@ -39,3 +39,4 @@ int main()
 
 	return 0;
 }
+*/
