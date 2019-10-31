@@ -4,8 +4,9 @@ extern unordered_map<char, Token> Vars_names;
 extern char var_assign;
 
 
-void solve_sysEquation(string &str)
+void solve_sysEquation(const string &s)
 {
+	string str = s;
 	str.erase(str.find(","), 1);
 	Lexer lex;
 	init(lex, str);
@@ -36,7 +37,7 @@ void solve_sysEquation(string &str)
 	}
 }
 
-void invert(string &str)
+void invert(const string &str)
 {
 	Matrix mat(str);
 	if (mat.NRows() < 2) {
@@ -57,7 +58,7 @@ void invert(string &str)
 		Vars_names[var_assign] = tok;
 }
 
-void transpose(string &str)
+void transpose(const string &str)
 {
 	Matrix mat(str);
 	if (mat.NRows() == 0) {
@@ -74,7 +75,7 @@ void transpose(string &str)
 		Vars_names[var_assign] = tok;
 }
 
-void echelon(string &str)
+void echelon(const string &str)
 {
 	Matrix mat(str);
 	if (mat.NRows() == 0) {
@@ -91,7 +92,7 @@ void echelon(string &str)
 		Vars_names[var_assign] = tok;
 }
 
-void det(string &str)
+void det(const string &str)
 {
 	Matrix mat(str);
 	if (mat.NRows() == 0) {
@@ -112,7 +113,7 @@ void det(string &str)
 		Vars_names[var_assign] = tok;
 }
 
-void rank_matrix(string &str)
+void rank_matrix(const string &str)
 {
 	Matrix mat(str);
 	if (mat.NRows() == 0) {
@@ -129,10 +130,11 @@ void rank_matrix(string &str)
 		Vars_names[var_assign] = tok;
 }
 
-void algebra(string &str)
+void algebra(const string &str)
 {
+	string s = str;
 	Lexer lexer_expression;
-	init(lexer_expression, str);
+	init(lexer_expression, s);
 	int check_ans = calculate_infix(Vars_names['_'], lexer_expression);
 
 	switch (check_ans)

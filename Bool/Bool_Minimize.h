@@ -4,4 +4,4 @@
 #include "Find_Prime_Implicants.h"
 #include "Find_EPIs.h"
 
-void bool_minimize(string &expression);
+void bool_minimize(const string &expression);

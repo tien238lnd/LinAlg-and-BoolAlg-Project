@@ -10,11 +10,12 @@ void print_final_result(const vector<vector<Implicant*>> &final_result, const ve
 	}
 }
 
-void bool_minimize(string &expression)
+void bool_minimize(const string &expression)
 {
+	string tempExpression = expression;
 	vector<char> variables_names;
 	
-	if (!preprocess(expression, variables_names))
+	if (!preprocess(tempExpression, variables_names))
 	{
 		cout << "Invalid character(s) in the function!\n";
 		return;
@@ -29,7 +30,7 @@ void bool_minimize(string &expression)
 		cout << "Function must have not over 25 variables.\n";
 		return;
 	}
-	if (!invalid_check(expression))
+	if (!invalid_check(tempExpression))
 	{
 		cout << "Invalid expression!\n";
 		return;
@@ -41,7 +42,7 @@ void bool_minimize(string &expression)
 		variables_idx[variables_names[i]] = i;
 
 	string postfix_expr;
-	postfix_convert(expression, postfix_expr);
+	postfix_convert(tempExpression, postfix_expr);
 	
 	vector<VarsValue> minterms;
 	find_minterms(postfix_expr, minterms, variables_idx);
