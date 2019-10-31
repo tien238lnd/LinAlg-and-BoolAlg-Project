@@ -54,3 +54,4 @@ void find_minterms(const string &postfix_expr, vector<VarsValue> &minterms, unor
 void find_prime_implicants(vector<Implicant> &implicants, vector<Implicant> &prime_implicants);
 
 void print_implicants(const vector<Implicant> &implicants, const vector<char> &vars_names);
+

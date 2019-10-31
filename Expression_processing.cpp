@@ -105,7 +105,7 @@ void postfix_convert(const string &expression, string &postfix_expr)
 			}
 			break;
 		case '!': case '.': case '+':
-			while (!operator_stack.empty() && priority(c) < priority(operator_stack.top())) {
+			while (!operator_stack.empty() && priority(c) <= priority(operator_stack.top())) {
 				postfix_expr += operator_stack.top();
 				operator_stack.pop();
 			}
