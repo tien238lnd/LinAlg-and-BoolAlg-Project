@@ -1,8 +1,7 @@
 #pragma once
 
-#include "../Main/String_Process.h"
-#include "../LinAlg/Algebra_Evaluate.h"
-#include "../LinAlg/Solve_System_Equation.h"
+#include "Arithmetic_Evaluate.h"
+#include "Solve_System_Equation.h"
 
 void solve_sysEquation(const string& s);
 void invert(const string &str);

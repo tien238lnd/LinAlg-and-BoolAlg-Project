@@ -39,8 +39,8 @@ void solve_sysEquation(const string &s)
 
 void invert(const string &str)
 {
-	Matrix mat(str);
-	if (mat.NRows() < 2) {
+	Matrix mat = evaluate_string_2_matrix(str);
+	if (mat.NRows() == 0) {
 		cout << "This is not a matrix!\n";
 		return;
 	}
@@ -60,7 +60,7 @@ void invert(const string &str)
 
 void transpose(const string &str)
 {
-	Matrix mat(str);
+	Matrix mat = evaluate_string_2_matrix(str);
 	if (mat.NRows() == 0) {
 		cout << "This is not a matrix!\n";
 		return;
@@ -77,7 +77,7 @@ void transpose(const string &str)
 
 void echelon(const string &str)
 {
-	Matrix mat(str);
+	Matrix mat = evaluate_string_2_matrix(str);
 	if (mat.NRows() == 0) {
 		cout << "This is not a matrix!\n";
 		return;
@@ -94,7 +94,7 @@ void echelon(const string &str)
 
 void det(const string &str)
 {
-	Matrix mat(str);
+	Matrix mat = evaluate_string_2_matrix(str);
 	if (mat.NRows() == 0) {
 		cout << "This is not a matrix!\n";
 		return;
@@ -115,7 +115,7 @@ void det(const string &str)
 
 void rank_matrix(const string &str)
 {
-	Matrix mat(str);
+	Matrix mat = evaluate_string_2_matrix(str);
 	if (mat.NRows() == 0) {
 		cout << "This is not a matrix!\n";
 		return;

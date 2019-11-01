@@ -106,10 +106,8 @@ Matrix Matrix::EchelonMatrix()
 Matrix Matrix::Invert()
 {
 	if (ncols != nrows)
-	{
-		//cout << "Cannot Invert!\n";
 		return Matrix();
-	}
+
 	//Tạo bản sao của ma trận gốc để không thay đổi ma trận gốc
 	Matrix temp(*this);
 	//Tạo ma trận đơn vị I
@@ -138,10 +136,7 @@ Matrix Matrix::Invert()
 
 			//Nếu có một dòng bằng 0 thì chương det = 0, không thể nghịch đảo
 			if (f1 == ncols || f2 == ncols)
-			{
-				//cout << "Cannot Invert!\n";
 				return Matrix();
-			}
 
 			//Nếu vị trí khác 0 đầu tiên của 2 hàng bằng nhau thì trừ cho hàng đang xét factor lần hàng j
 			if (f1 == f2)
@@ -156,7 +151,6 @@ Matrix Matrix::Invert()
 					I[i][k] -= factor * I[j][k];
 				}
 			}
-
 			//Nếu f1 > f2 thì ta phải hoán vị 2 hàng cho nhau
 			else if (f1 > f2)
 			{
@@ -165,6 +159,8 @@ Matrix Matrix::Invert()
 				break;
 			}
 		}
+		if (LeadingEntry(temp[i]) == ncols)
+			return Matrix();
 	}
 
 	//Chuyển về ma trận đơn vị
@@ -186,12 +182,9 @@ Matrix Matrix::Invert()
 
 	//Chia các phần tử của hàng i cho temp[i][i] đưa temp[i][i] về 1, tức ma trận đơn vị
 	for (int i = 0; i < nrows; i++)
-	{
 		for (int j = 0; j < ncols; j++)
-		{
 			I[i][j] /= temp[i][i];
-		}
-	}
+
 	return I;
 }
 
@@ -349,6 +342,7 @@ Matrix::Matrix(const Vector & vec)
 Matrix::Matrix(const string &str)
 {	
 	this->Matrix::Matrix();
+
 	if (str.front() != '[' && str.back() != ']')
 		return;
 	vector<string> vecstr;
