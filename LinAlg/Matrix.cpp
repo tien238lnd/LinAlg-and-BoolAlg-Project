@@ -256,7 +256,7 @@ Matrix Matrix::operator*(const Matrix& other) const
 		//cout << "Invalid dimesion!\n";
 		return Matrix();
 	}
-	Matrix* result = new Matrix(nrows, other.ncols);
+	Matrix result(nrows, other.ncols);
 
 	for (int i = 0; i < nrows; i++)
 	{
@@ -267,10 +267,10 @@ Matrix Matrix::operator*(const Matrix& other) const
 			{
 				S += rows[i][k] * other.rows[k][j];
 			}
-			result->rows[i][j] = S;
+			result.rows[i][j] = S;
 		}
 	}
-	return *result;
+	return result;
 }
 
 Matrix operator*(double k, const Matrix &A)
@@ -307,7 +307,12 @@ ostream& operator <<(ostream& os, const Matrix& A)
 	{
 		os << "[";
 		for (int j = 0; j < A.ncols; j++)
-			os << setw(5) << setprecision(2) << A.rows[i][j] << " ";
+		{
+			double Data = Approximate(A.rows[i][j], round(A.rows[i][j])) ? round(A.rows[i][j]) : A.rows[i][j];
+			if (Approximate(Data, 0.00))
+				Data = 0.00;
+			os << setw(5) << setprecision(2) << Data << " ";
+		}
 		os << "]\n";
 	}
 	return os;

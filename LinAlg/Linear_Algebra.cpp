@@ -4,37 +4,36 @@ extern unordered_map<char, Token> Vars_names;
 extern char var_assign;
 
 
-void solve_sysEquation(const string &s)
+void solve_sysEquation(const string& s)
 {
 	string str = s;
-	str.erase(str.find(","), 1);
 	Lexer lex;
 	init(lex, str);
-	vector<Token> tokens;
-	while (true)
-	{
-		Token tok;
-		get_token(lex, tok);
-		if (tok.type == TOK_EOL)
-			break;
-		if (tok.type == TOK_ERROR1) {
-			cout << "Invalid character or misspelling!\n"; break;
-		}
-		if (tok.type == TOK_ERROR2) {
-			cout << "Variable not found!\n"; break;
-		}
-		tokens.push_back(tok);
-	}
-	if (tokens.size() != 2 || tokens[0].type != TOK_MATRIX || (tokens[1].type != TOK_VECTOR && tokens[1].type != TOK_MATRIX)) {
-		cout << "Wrong expression!\n";
+	Token tok1, tok2;
+
+	get_token(lex, tok1);
+	if (tok1.type != TOK_MATRIX) {
+		cout << "Wrong format!\n";
 		return;
 	}
-	if (tokens[1].type == TOK_MATRIX)
-		Solve(*(Matrix*)tokens[0].valptr, *(Matrix*)tokens[1].valptr);
-	else {
-		Matrix mat = Matrix(*(Vector*)tokens[1].valptr).Transpose();
-		Solve(*(Matrix*)tokens[0].valptr, mat);
+	lex.pos++;
+	get_token(lex, tok2);
+	if (tok2.type != TOK_MATRIX && tok2.type != TOK_VECTOR) {
+		cout << "Wrong format!\n";
+		return;
 	}
+
+	Matrix mat;
+	if (tok2.type == TOK_VECTOR)
+		mat = Matrix(*(Vector*)tok2.valptr).Transpose();
+	else mat = *(Matrix*)tok2.valptr;
+
+	if (mat.NCols() != 1 || mat.NRows() != ((Matrix*)tok1.valptr)->NRows()) {
+		cout << "Wrong matrix or vector!\n";
+		return;
+	}
+
+	Solve(*(Matrix*)tok1.valptr, mat);
 }
 
 void invert(const string &str)
