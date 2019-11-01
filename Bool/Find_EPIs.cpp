@@ -1,7 +1,7 @@
 ﻿#include "Find_EPIs.h"
 
 bool check_cover(const vector<Implicant*> &subSet_of_remainImps, const unordered_set<int> &uncovered_minterms)
-{
+{	// hàm kiểm tra một tập con có cover hết các uncovered_minterms không
 	unordered_set<int> set_minterms_of_remainImps;
 	for (const auto &im : subSet_of_remainImps)
 		if (im != NULL)
@@ -13,30 +13,33 @@ bool check_cover(const vector<Implicant*> &subSet_of_remainImps, const unordered
 }
 
 bool filter(vector<Implicant*> &full_cover_EPIs, const unordered_set<int> &uncovered_minterms, vector<vector<Implicant*>> &multi_remain_EPIs)
-{	// tập con của full_cover_EPIs sinh bởi việc loại/ko loại ptử [k]
+{	// hàm đệ quy duyệt qua các tập con của full_cover_EPIs
+	// tập con của full_cover_EPIs sinh bởi việc loại/ko loại ptử [k]
 	// return 0 nghĩa là ko tìm được tập con nào (ko kể chính tập đó) cover được, return 1 nghĩa là tìm được
 	static int k = 0;
-	static int size = full_cover_EPIs.size();
-	static int min_size = size;
+	static int size = full_cover_EPIs.size();	// size này là size của tập con, vì ta ko xóa mà chỉ gán ptử bằng NULL nên phải lưu size lại
+	static int min_size = size;	// cờ min_size để ghi nhớ lại tập con nhỏ nhất đã tìm được
 	if (k == full_cover_EPIs.size())
 		return 0;
 
 	bool found = 0;
 	Implicant* imp = full_cover_EPIs[k];
-	full_cover_EPIs[k] = NULL; size--;
+	full_cover_EPIs[k] = NULL; size--;	// thay vì loại ptử [k], ta sẽ gán nó bằng NULL
 	k++;
+	// nếu cover được thì đi xuống duyệt tiếp các tập con của tập đó
 	if (check_cover(full_cover_EPIs, uncovered_minterms)) {
+		// nếu ở dưới không còn tập con nào phủ được thì lấy tập hiện tại
 		if (size == 1 || filter(full_cover_EPIs, uncovered_minterms, multi_remain_EPIs) == 0)
 			if (size <= min_size) {
 				if (size < min_size) {
 					multi_remain_EPIs.clear();
 					min_size = size;
 				}
-				multi_remain_EPIs.push_back(full_cover_EPIs);	// trong này sẽ có NULL ~~
+				multi_remain_EPIs.push_back(full_cover_EPIs);
 			}
 		found = 1;
 	}
-	full_cover_EPIs[k - 1] = imp; size++;
+	full_cover_EPIs[k - 1] = imp; size++;	// điền ptử [k] vào lại và duyệt tiếp
 	found = filter(full_cover_EPIs, uncovered_minterms, multi_remain_EPIs) || found;
 	k--;
 	return found;
@@ -129,7 +132,7 @@ void find_EPIs(vector<Implicant> &prime_implicants, vector<vector<Implicant*>> &
 				EPIs.erase(where_NULL);
 			else break;
 		}
-
+	// lọc lại lần cuối tìm các tập con có tổng số từ đơn (số bits) nhỏ nhất
 	vector<vector<Implicant*>> multi_remain_EPIs_last_filter;
 	int min_total_bit_count = INT32_MAX;
 	for (const auto &EPIs : multi_remain_EPIs)
@@ -143,7 +146,7 @@ void find_EPIs(vector<Implicant> &prime_implicants, vector<vector<Implicant*>> &
 			multi_remain_EPIs_last_filter.push_back(EPIs);
 		}
 	}
-
+	// ghép với EPIs tìm được ở trên để tạo thành đa thức cuối cùng
 	for (int i = 0; i < multi_remain_EPIs_last_filter.size(); i++)
 	{
 		final_minimum_function.push_back(vector<Implicant*>(first_filter_EPIs.begin(), first_filter_EPIs.end()));

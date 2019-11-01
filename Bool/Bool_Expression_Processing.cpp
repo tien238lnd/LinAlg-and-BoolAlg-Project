@@ -2,10 +2,10 @@
 
 bool preprocess(string &expression, vector<char> &variables_names)
 {
-	for (int i = 0; i < expression.length(); i++)	// để rảnh thử sửa lại for (char c : expression) xem sao
+	for (int i = 0; i < expression.length(); i++)
 		switch (expression[i]) {
 		case ' ':
-			expression.erase(i, 1); i--; break;
+			expression.erase(i, 1); i--; break;	// xóa hết các khoảng trắng
 		case '-': case '~':
 			expression[i] = '!'; break;
 		case 'V': case 'v': case '|':

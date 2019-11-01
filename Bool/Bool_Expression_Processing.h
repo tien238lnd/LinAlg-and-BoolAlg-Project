@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include <string>
 #include <vector>
@@ -6,10 +6,12 @@
 using namespace std;
 
 bool preprocess(string &expression, vector<char> &variables_names);
-// xoa cac khoang trang va chuyen cac phep toan co nhieu cach viet ve 1 cach viet
-// lay danh sach bien
-// kiem tra ky tu ko cho phep
+// xóa các khoảng trắng và đồng nhất cách viết các toán tử
+// lấy danh sách biến 
+// kiểm tra ký tự cho phép
 
 bool invalid_check(const string &expression);
+// kiểm tra lỗi cú pháp
 
 void postfix_convert(const string &expression, string &postfix_expr);
+// chuyển sang biểu thức hậu tố

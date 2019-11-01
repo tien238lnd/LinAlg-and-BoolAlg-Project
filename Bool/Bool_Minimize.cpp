@@ -47,11 +47,13 @@ void bool_minimize(const string &expression)
 	vector<VarsValue> minterms;
 	find_minterms(postfix_expr, minterms, variables_idx);
 
+	// nếu số minterms = 2^n thì hàm đó là hằng đúng, in ra 1 và stop
 	if (minterms.size() == pow(2, variables_names.size())) {
 		cout << endl << endl << "=== Final result ===" << endl;
 		cout << 1 << endl;
 		return;
 	}
+	// nếu số minterms = 0 thì hàm đó là hằng sai, in ra 0 và stop
 	if (minterms.size() == 0) {
 		cout << endl << endl << "=== Final result ===" << endl;
 		cout << 0 << endl;

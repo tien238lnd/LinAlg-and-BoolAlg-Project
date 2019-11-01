@@ -64,5 +64,3 @@ int main()
 	}
 	return 0;
 }
-
-// nên thống nhất 0 là đúng còn khác 0 là sai

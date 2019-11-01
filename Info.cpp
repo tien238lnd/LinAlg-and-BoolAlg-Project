@@ -23,7 +23,7 @@ void help()
 	cout << "You can also do arithmetic with the [] format directly.\n";
 	cout << "Ex: [0, -1, 6][3, -4, 0.7] * [1][2][3] : it will be an 2x1 matrix.\n";
 	cout << "Some functions with matrix: invert(), rank(), det(), transpose(), echelon(), and solve(A, b) with b is a vector or a matrix mx1.\n";
-	cout << "Functions cannot be used with other functions or operators(Ex: invert(A)*A is not allowed).\n";
+	cout << "Functions cannot be used with other functions or operators (Ex: invert(A)*A is not allowed).\n";
 	cout << "Arithmetic with matrix is allowed inside these function.\n";
 	cout << "Ex: rank(A*-A) is fine, or invert([2,3][5,6][0, -1] * [0,-1,9][6,0,-7]) is ok too.\n";
 	cout << "SPECIAL FEATURE: If you want to get the last answer, use '_' (credit to python).\n";
