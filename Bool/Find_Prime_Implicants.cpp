@@ -3,7 +3,7 @@
 string ImplicantToString(const Implicant &imp, const vector<char> &vars_names)
 {
 	string result;
-	for (int i = 0; i < imp.size(); i++)
+	for (int i = 0; i < imp.bits.size(); i++)
 	{
 		if (imp.bits[i] == 1)
 			result += vars_names[i] + string(".");
@@ -24,18 +24,18 @@ bool calculate(const string &postfix_expr, const VarsValue &vars_value, unordere
 	// nếu gặp toán tử thì pop 1 hoặc 2 toán hạng đầu stack ra, tính rồi push vào
 	stack<bool> value;
 	bool x, y;
-	for (char c : postfix_expr)
+	for (const char &c : postfix_expr)
 		switch (c) {
 		case '!':
 			value.top() = !value.top(); break;
 		case '.':
 			x = value.top(); value.pop();
-			y = value.top(); value.pop();
-			value.push(x && y); break;
+			y = value.top();
+			value.top() = x && y; break;
 		case '+':
 			x = value.top(); value.pop();
-			y = value.top(); value.pop();
-			value.push(x || y); break;
+			y = value.top();
+			value.top() = x || y; break;
 		case '0': case '1':
 			value.push(c == '1'); break;
 		default:
@@ -70,10 +70,9 @@ void generate_evaluate(VarsValue &vars_value, int i, const string &postfix_expr,
 
 void generate_evaluate2(VarsValue &vars_value, int i, const string &postfix_expr, vector<VarsValue> &minterms, unordered_map<char, int> &vars_idx)
 {	// hàm này giống hàm trên nhưng không in các bộ giá trị ra, dùng trong trường hợp nhiều hơn 7 biến
-	static int minterm_id = 0;
 	if (i == vars_value.size()) {
 		if (calculate(postfix_expr, vars_value, vars_idx) == 1)
-			minterms.push_back(vars_value);
+			minterms.emplace_back(vars_value);
 		return;
 	}
 	vars_value[i] = 0;
@@ -95,54 +94,56 @@ void find_minterms(const string &postfix_expr, vector<VarsValue> &minterms, unor
 	else generate_evaluate2(vars_value, 0, postfix_expr, minterms, vars_idx);
 }
 
-int is_combinable_or_same(const Implicant &i1, const Implicant &i2)
-{	// 0 = not combinable, 1 = combinable, 2 = same
-	if (abs(i1.bit1count - i2.bit1count) > 1)
+bool is_combinable(const Implicant &i1, const Implicant &i2)
+{	// 0 = not combinable, 1 = combinable
+	if (abs(i1.bit1count - i2.bit1count) != 1)
 		return 0;
 	int differ = 0;
-	for (int i = 0; i < i1.size(); i++) {
-		differ += i1[i] != i2[i];
+	for (int i = 0; i < i1.bits.size(); i++) {
+		differ += i1.bits[i] != i2.bits[i];
 		if (differ > 1)
 			return 0;
 	}
-	if (differ == 1)
-		return 1;
-	else return 2;	// differ = 0
+	return 1;
 }
 
 void find_prime_implicants(vector<Implicant> &implicants, vector<Implicant> &prime_implicants)
 {	// hàm tìm các PI từ Implicants bậc 0 (được chuyển từ minterms thành)
 	vector<Implicant> higher_order_implicants;
+	int iter = 1;
 	while (true)
-	{	// duyệt qua tất cả các cặp implicant
-		for (int i = 0; i < implicants.size() - 1; i++)
+	{	
+		//cout << "Iter " << iter++ << " : implicants = " << implicants.size() << endl;
+		// duyệt qua tất cả các cặp implicant
+		int bound_i = implicants.size() - 1;
+		for (int i = 0; i < bound_i; i++)
 			for (int j = i + 1; j < implicants.size(); j++)
-			{	// kiểm tra xem chúng có ghép được với nhau ko?
-				int check = is_combinable_or_same(implicants[i], implicants[j]);
-				switch (check) {
-				case 1:	// nếu được thì tạo một Imp bậc cao hơn và lưu vào mảng, đồng thời đánh dấu lại là đã ghép (tức ko phải prime)
-					higher_order_implicants.push_back(Implicant(implicants[i], implicants[j]));
+				// kiểm tra xem chúng có ghép được với nhau ko?
+				if (is_combinable(implicants[i], implicants[j]))
+				{
+					Implicant HI(implicants[i], implicants[j]);
 					implicants[i].is_prime = implicants[j].is_prime = 0;
-
-					break;
-				case 2:
-				// trong khi ghép sẽ có trường hợp 2 implicant giống nhau, nếu phải vậy thì xóa bớt đi 1 cái
-					implicants.erase(implicants.begin() + j);
-					j--; break;
+					// kiểm tra xem higher_order_imp này có giống với 1 higher_order_imp đã được tạo ra trước đó chưa?
+					bool is_dupli = 0;
+					for (const auto &i : higher_order_implicants)
+						if (HI.bit1count == i.bit1count && HI.bits == i.bits) {
+							is_dupli = 1; break;
+						}
+					if (!is_dupli)
+						higher_order_implicants.emplace_back(HI);
 				}
-			}
-		// nếu còn tìm được các cặp ghép, thì lại duyệt trên mảng các implicant bậc cao đó để ghép tiếp
+	
 		if (higher_order_implicants.size() != 0) {
 			// lấy những imp không ghép được cho vào mảng kết quả Prime Implicants
-			for (auto i : implicants)
+			for (const auto &i : implicants)
 				if (i.is_prime == 1)
-					prime_implicants.push_back(i);
+					prime_implicants.emplace_back(i);
 			// tráo lại mảng để thực hiện lại vòng lặp
 			implicants = higher_order_implicants;
 			higher_order_implicants.clear();
 		}
 		else {
-		// nếu ko tìm được nữa thì đem hết các implicants còn lại vào mảng kết quả
+			// nếu ko tìm được nữa thì đem hết các implicants còn lại vào mảng kết quả
 			prime_implicants.insert(prime_implicants.end(), implicants.begin(), implicants.end());
 			break;
 		}

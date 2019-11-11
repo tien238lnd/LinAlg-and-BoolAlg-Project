@@ -13,7 +13,6 @@ private:
 public:
 	int NRows();
 	int NCols();
-	void Input();
 	double Det();
 	Matrix EchelonMatrix();
 	Matrix Invert();

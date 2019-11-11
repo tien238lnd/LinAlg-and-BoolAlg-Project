@@ -19,8 +19,8 @@ public:
 	int bit01count;
 	vector<int> minterms_idx;	// danh sách các minterm được cover bởi implicant đó
 	bool is_prime = 1;
-	int size() const { return bits.size(); }
-	char operator[](int n) const { return bits[n]; }
+	//int size() const { return bits.size(); }
+	//char operator[](int &n) const { return bits[n]; }
 
 	// khởi tạo implicant bậc 0 từ minterm
 	Implicant(const VarsValue &minterm) {
@@ -37,7 +37,7 @@ public:
 	}
 	// khởi tạo 1 implicant bậc cao hơn từ 2 implicants i1 và i2 (chúng đã được đảm bảo là ghép đôi được)
 	Implicant(const Implicant &i1, const Implicant &i2) {
-		bits.resize(i1.size());
+		bits.resize(i1.bits.size());
 		bit1count = min(i1.bit1count, i2.bit1count);
 		bit01count = i1.bit01count - 1;	// i1.bit01count luôn bằng i2.bit01count
 		minterms_idx = i1.minterms_idx;

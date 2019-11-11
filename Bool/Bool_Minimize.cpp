@@ -43,10 +43,10 @@ void bool_minimize(const string &expression)
 
 	string postfix_expr;
 	postfix_convert(tempExpression, postfix_expr);
-	
+	//cout << "Find minterms...";
 	vector<VarsValue> minterms;
 	find_minterms(postfix_expr, minterms, variables_idx);
-
+	//cout << "DONE: " << minterms.size() << endl;
 	// nếu số minterms = 2^n thì hàm đó là hằng đúng, in ra 1 và stop
 	if (minterms.size() == pow(2, variables_names.size())) {
 		cout << endl << endl << "=== Final result ===" << endl;
@@ -61,14 +61,16 @@ void bool_minimize(const string &expression)
 	}
 
 	vector<Implicant> implicants(minterms.begin(), minterms.end());
-
+	//cout << "Find PI...\n";
 	vector<Implicant> prime_implicants;
 	find_prime_implicants(implicants, prime_implicants);
 	if (variables_names.size() <= 7)
 		print_implicants(prime_implicants, variables_names);
-
+	//cout << "DONE.\n";
 	vector<vector<Implicant*>> final_minimum_function;
+	//cout << "Find EPI...";
 	find_EPIs(prime_implicants, final_minimum_function);
+	//cout << "DONE.\n";
 	cout << endl << endl << "=== Final result ===" << endl;
 	print_final_result(final_minimum_function, variables_names);
 

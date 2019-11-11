@@ -10,24 +10,6 @@ int Matrix::NCols()
 	return ncols;
 }
 
-void Matrix::Input()
-{
-	cout << "NRows: ";
-	cin >> nrows;
-	cout << "NCols: ";
-	cin >> ncols;
-	rows.resize(nrows);
-	for (int i = 0; i < nrows; i++)
-	{
-		rows[i].resize(ncols);
-		for (int j = 0; j < ncols; j++)
-		{
-			cout << i << "_" << j << ": ";
-			cin >> rows[i][j];
-		}
-	}
-}
-
 double Matrix::Det()
 {
 	if (nrows != ncols)
@@ -55,7 +37,6 @@ double Matrix::Det()
 			{
 				det *= -1;
 				temp.SwapRows(i, j);
-				break;
 			}
 		}
 	}
@@ -94,10 +75,7 @@ Matrix Matrix::EchelonMatrix()
 			}
 			//Nếu f1 > f2 thì ta phải hoán vị 2 hàng cho nhau
 			else if(f1 > f2)
-			{
 				temp.SwapRows(i, j);
-				break;
-			}
 		}
 	}
 	return temp;
@@ -156,7 +134,6 @@ Matrix Matrix::Invert()
 			{
 				temp.SwapRows(i, j);
 				I.SwapRows(i, j);
-				break;
 			}
 		}
 		if (LeadingEntry(temp[i]) == ncols)
@@ -308,10 +285,10 @@ ostream& operator <<(ostream& os, const Matrix& A)
 		os << "[";
 		for (int j = 0; j < A.ncols; j++)
 		{
-			double Data = Approximate(A.rows[i][j], round(A.rows[i][j])) ? round(A.rows[i][j]) : A.rows[i][j];
+			double Data = round(A.rows[i][j] * 100) / 100;
 			if (Approximate(Data, 0.00))
 				Data = 0.00;
-			os << setw(5) << setprecision(2) << Data << " ";
+			os << setw(5) << Data << " ";
 		}
 		os << "]\n";
 	}

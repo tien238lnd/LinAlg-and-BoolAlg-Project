@@ -42,7 +42,7 @@ void help()
 void credit()
 {
 	cout << "HCMUS - 10/2019\n";
-	cout << "18TT5B - Data Structures and Algorithms\n";
+	cout << "18CTT5B - Data Structures and Algorithms\n";
 	cout << "Lecturer: Nguyen Thanh An\n\n";
 	cout << "Members:\n";
 	cout << "Nguyen Dang Trung Tien - 18120591\n";
