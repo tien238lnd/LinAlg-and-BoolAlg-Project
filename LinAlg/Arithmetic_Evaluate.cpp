@@ -59,6 +59,8 @@ int calculate_infix(Token &lvalue, Lexer &lex)
 				operators.push('('); break;
 			case ')':
 				while (true) {
+					if (operators.size() == 0)
+						return 5;
 					char op = operators.top(); operators.pop();
 					if (op != '(') {
 						int ans_check = cal_operator(operands, op);
