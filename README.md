@@ -8,4 +8,5 @@ Features:
 - Solve the system of linear equations.
 - Find all minimal forms of a given Boolean function.
 
-[![Watch the demo video](https://img.youtube.com/vi/ior_Gy3byeQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=ior_Gy3byeQ)
+    _Watch the demo video_
+[![](https://img.youtube.com/vi/ior_Gy3byeQ/maxresdefault.jpg)](https://www.youtube.com/watch?v=ior_Gy3byeQ)
